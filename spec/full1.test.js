@@ -1,4 +1,4 @@
-const init = require("../index");
+const init = require("../src/index");
 const { execute } = require("../src/util");
 
 it("access the correct database", async () => {
