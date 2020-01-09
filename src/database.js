@@ -41,4 +41,11 @@ exports.restore = async (pool, suffix) => {
 	return newDbName;
 };
 
+exports.resetTable = async (pool, backup, table) => {
+	var sql = `
+DELETE FROM ${table};
+INSERT INTO ${table} SELECT * FROM ${backup}.dbo.${table}`;
+	return await execute(pool, sql);
+};
+
 exports.dumpPath = dumpPath;

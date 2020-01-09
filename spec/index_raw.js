@@ -17,12 +17,18 @@ exports.run = () => {
 		var pool = await init.getPool();
 		var get1 = await execute(pool, "SELECT * FROM SQLTest");
 
-		var set1 = await execute(
-			pool,
-			"INSERT INTO SQLTest (ID, c1) VALUES (8, 'test8')"
-		);
+		await execute(pool, "INSERT INTO SQLTest (ID, c1) VALUES (8, 'test8')");
 		var get2 = await execute(pool, "SELECT * FROM SQLTest");
 		expect(get2.length).toBe(get1.length + 1);
+
+		await init.resetTables(pool, "SQLTest");
+		var get3 = await execute(pool, "SELECT * FROM SQLTest");
+		expect(get3.length).toBe(get1.length);
+
+		await execute(pool, "INSERT INTO SQLTest (ID, c1) VALUES (9, 'test9')");
+		await init.resetDb(pool);
+		var get4 = await execute(pool, "SELECT * FROM SQLTest");
+		expect(get3.length).toBe(get4.length);
 	});
 
 	it("number of databases stay the same", async () => {
