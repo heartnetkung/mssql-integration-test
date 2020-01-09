@@ -7,14 +7,19 @@
 	"author": "heartnetkung <heartnetkung@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"app-root-path": "^3.0.0",
+		"commander": "^4.1.0",
 		"mssql": "^6.0.1"
 	},
 	"scripts": {
-		"docker-run": "node cli.js start",
-		"test": "jest"
+		"init-docker": "node scripts/cli.js init -d spec/dump.bak",
+		"init-local": "node scripts/cli.js init spec/dump.bak",
+		"stop-docker": "node scripts/cli.js stop-docker",
+		"test": "jest --testPathIgnorePatterns=\"docker\"",
+		"test-connection": "node scripts/test_connection",
+		"test-docker": "jest docker"
 	},
 	"devDependencies": {
-		"jest": "^24.9.0"
+		"jest": "^24.9.0",
+		"ping": "^0.2.2"
 	}
 }
