@@ -11,10 +11,10 @@
 		"mssql": "^6.0.1"
 	},
 	"scripts": {
-		"init-docker": "node scripts/cli.js init -d spec/dump.bak",
-		"init-local": "node scripts/cli.js init spec/dump.bak",
-		"stop-docker": "node scripts/cli.js stop-docker",
-		"help": "node scripts/cli.js --help",
+		"init-docker": "node src/cli.js init -d spec/dump.bak",
+		"init-local": "node src/cli.js init spec/dump.bak",
+		"stop-docker": "node src/cli.js stop-docker",
+		"help": "node src/cli.js --help",
 		"test": "jest --testPathIgnorePatterns=\"docker\"",
 		"test-docker": "jest docker"
 	},

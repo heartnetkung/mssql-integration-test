@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 const program = require("commander");
-const docker = require("../src/docker");
+const docker = require("./docker");
 const package = require("../package.json");
-const util = require("../src/util");
+const util = require("./util");
 const fs = require("fs");
 const path = require("path");
-const database = require("../src/database");
-const index = require("../src/index");
+const database = require("./database");
+const index = require("./index");
 
 program.constructor.prototype.addOption = function() {
 	return this.option("-d, --use-docker")
