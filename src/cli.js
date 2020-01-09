@@ -30,17 +30,36 @@ const handleConfig = cmdObj => {
 	return config;
 };
 
+const wait = ms =>
+	new Promise(res => {
+		setTimeout(res, ms);
+	});
+
 program
 	.command("init <backup_file>")
 	.description("initialize mssql 2017 docker and prepare backup file")
 	.addOption()
-	.action((backup, cmdObj) => {
+	.action(async (backup, cmdObj) => {
 		var config = handleConfig(cmdObj);
-		if (!config.useDocker)
-			return fs.copyFileSync(backup, database.dumpPath());
-		var dockerId = docker.findDockerId();
-		if (dockerId) throw new Error("Docker already started.");
-		docker.startDocker(backup);
+
+		if (config.useDocker) {
+			var dockerId = docker.findDockerId();
+			if (dockerId) throw new Error("Docker already started.");
+			docker.startDocker(backup);
+		} else fs.copyFileSync(backup, database.dumpPath());
+
+		//retry until the docker/database is ready
+		var pool;
+		for (var i = 0; i < 10; i++)
+			try {
+				pool = await index.rawGetPool();
+				break;
+			} catch (e) {
+				await wait(i * 1000);
+			}
+
+		await database.restore(pool, "_for_reset");
+		if (pool) pool.close();
 	});
 
 program
