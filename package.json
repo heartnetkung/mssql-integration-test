@@ -14,8 +14,8 @@
 		"init-docker": "node scripts/cli.js init -d spec/dump.bak",
 		"init-local": "node scripts/cli.js init spec/dump.bak",
 		"stop-docker": "node scripts/cli.js stop-docker",
+		"help": "node scripts/cli.js --help",
 		"test": "jest --testPathIgnorePatterns=\"docker\"",
-		"test-connection": "node scripts/test_connection",
 		"test-docker": "jest docker"
 	},
 	"devDependencies": {

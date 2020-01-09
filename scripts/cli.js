@@ -4,6 +4,7 @@ const docker = require("../src/docker");
 const package = require("../package.json");
 const util = require("../src/util");
 const fs = require("fs");
+const path = require("path");
 const database = require("../src/database");
 const index = require("../src/index");
 
@@ -47,24 +48,37 @@ program
 	.description("get information about the connecting SQL Server")
 	.addOption()
 	.action(async cmdObj => {
+		var pool;
 		try {
 			handleConfig(cmdObj);
-			var pool = await index.rawGetPool();
+			pool = await index.rawGetPool();
 			var ans = await util.execute(pool, "select @@version");
 			console.log(ans[0][""]);
-			pool.close();
 		} catch (e) {
 			console.error(e);
 		}
+		if (pool) pool.close();
 	});
 
 program
-	.command("backup")
-	.description("initialize mssql 2017 local")
+	.command("backup <database_name> <destination_folder>")
+	.description(
+		"backup the database with the given name to the destination folder with filename dump.bak"
+	)
 	.addOption()
-	.action(cmdObj => {
-		//handle
-		handleConfig(cmdObj);
+	.action(async (dbName, folder, cmdObj) => {
+		var pool;
+		try {
+			var config = handleConfig(cmdObj);
+			pool = await index.rawGetPool();
+			await database.backup(pool, dbName);
+			if (config.useDocker)
+				return docker.copyBackupFileFromDocker(folder);
+			fs.renameSync(database.dumpPath(), path.join(folder, "dump.bak"));
+		} catch (e) {
+			console.error(e);
+		}
+		if (pool) pool.close();
 	});
 
 program
